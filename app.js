@@ -20,13 +20,25 @@ const eventSchema = mongoose.Schema({
   location: String,
   participants: [String],
   date: Date,
+  timeStart: String,
+  timeEnd: String,
   notes: String
 });
 
 // create database model based on the schema
 var Event = mongoose.model('Event', eventSchema);
 
-// GET api, to pull all tha data/event list
+// enable CORS policy for all domain/origin
+app.use(function(req, res, next) {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header(
+    'Access-Control-Allow-Headers',
+    'Origin, X-Requested-With, Content-Type, Accept'
+  );
+  next();
+});
+
+// GET api, to pull all the data/event list
 app.get('/event', (req, res) => {
   Event.find()
     .exec()
@@ -47,15 +59,14 @@ app.post('/event', (req, res) => {
     location: req.body.location,
     participants: req.body.participants,
     date: req.body.date,
+    timeStart: req.body.timeStart,
+    timeEnd: req.body.timeEnd,
     notes: req.body.notes
   });
   event
     .save()
     .then(result => {
-      console.log(result);
-      res.status(200).json({
-        message: 'inserted successfuly'
-      });
+      res.status(200).json({});
     })
     .catch(err => console.log(err));
 });
